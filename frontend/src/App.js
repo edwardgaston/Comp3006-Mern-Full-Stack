@@ -1,10 +1,11 @@
-// filepath: /d:/Coding Projects/Comp3006 Full Stack Development/Comp3006-Mern-Full-Stack/frontend/src/App.js
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, Button, Container } from '@mui/material';
 import Menu from './components/Menu';
 import Home from './components/Home';
 import Login from './components/Login';
+import Register from './components/Register';
+import Cart from './components/Cart';
 
 function App() {
   return (
@@ -15,7 +16,12 @@ function App() {
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Restaurant Ordering System
             </Typography>
-            <Button color="inherit">Login</Button>
+            <Button color="inherit" component={Link} to="/login">
+              Login
+            </Button>
+            <Button color="inherit" component={Link} to="/cart">
+              Cart
+            </Button>
           </Toolbar>
         </AppBar>
         <Container>
@@ -23,6 +29,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/menu" element={<Menu />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/cart" element={<Cart />} />
           </Routes>
         </Container>
       </div>

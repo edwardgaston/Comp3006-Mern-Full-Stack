@@ -1,15 +1,21 @@
 // filepath: /d:/Coding Projects/Comp3006 Full Stack Development/Comp3006-Mern-Full-Stack/frontend/src/components/Menu.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Grid, Card, CardContent, Typography, CardActions, Button } from '@mui/material';
 import { getMenuItems } from '../services/api';
+import { CartContext } from '../context/CartContext';
 
 function Menu() {
   const [menuItems, setMenuItems] = useState([]);
+  const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
     const fetchMenuItems = async () => {
-      const items = await getMenuItems();
-      setMenuItems(items);
+      try {
+        const items = await getMenuItems();
+        setMenuItems(items);
+      } catch (error) {
+        console.error('Failed to fetch menu items:', error);
+      }
     };
     fetchMenuItems();
   }, []);
@@ -31,7 +37,7 @@ function Menu() {
               </Typography>
             </CardContent>
             <CardActions>
-              <Button size="small" variant="contained" color="primary">
+              <Button size="small" variant="contained" color="primary" onClick={() => addToCart(item)}>
                 Add to Cart
               </Button>
             </CardActions>
