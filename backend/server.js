@@ -1,18 +1,44 @@
 import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import http from 'http';
+import { Server } from 'socket.io';
 import dotenv from 'dotenv';
-import connectDB from './config/db.js';
-
+import menuRoutes from './routes/menu.item.route.js';
+import orderRoutes from './routes/order.route.js';
 import productRoutes from './routes/product.route.js';
+import userRoutes from './routes/user.route.js';
 
 dotenv.config();
-connectDB(); // Ensure the database is connected before handling requests
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
+
+app.use(cors());
+app.use(express.json());
+
 const PORT = process.env.PORT || 5000;
-app.use(express.json()); // Middleware to parse JSON request bodies
+const DB_URI = process.env.DB_URI;
 
-app.use("/api/products", productRoutes);
+mongoose.connect(DB_URI)
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.log(err));
 
-app.listen(PORT, () => {
-    console.log('Server started at http://localhost:' + PORT);
+// WebSocket setup
+io.on('connection', (socket) => {
+  console.log('a user connected');
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+});
+
+// Routes
+app.use('/api/menu', menuRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/users', userRoutes);
+
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
