@@ -1,17 +1,22 @@
-// filepath: /d:/Coding Projects/Comp3006 Full Stack Development/Comp3006-Mern-Full-Stack/frontend/src/App.js
 import React, { useContext } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, Button, Container, IconButton, Avatar } from '@mui/material';
-import Menu from './components/Menu';
 import Home from './components/Home';
+import Menu from './components/Menu';
 import Login from './components/Login';
 import Register from './components/Register';
 import Cart from './components/Cart';
 import Profile from './components/Profile';
+import AddMenuItem from './components/AddMenuItem';
+import EditMenuItem from './components/EditMenuItem';
 import { UserContext } from './context/UserContext';
 
 function App() {
-  const { user } = useContext(UserContext);
+  const { user, logout } = useContext(UserContext);
+
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
     <Router>
@@ -38,9 +43,14 @@ function App() {
               Cart
             </Button>
             {user && (
-              <IconButton color="inherit" component={Link} to="/profile">
-                <Avatar>{user.name.charAt(0)}</Avatar>
-              </IconButton>
+              <>
+                <IconButton color="inherit" component={Link} to="/profile">
+                  <Avatar>{user.name.charAt(0)}</Avatar>
+                </IconButton>
+                <Button color="inherit" onClick={handleLogout}>
+                  Logout
+                </Button>
+              </>
             )}
           </Toolbar>
         </AppBar>
@@ -52,6 +62,12 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/profile" element={<Profile />} />
+            {user && user.role === 'admin' && (
+              <>
+                <Route path="/add-menu-item" element={<AddMenuItem />} />
+                <Route path="/edit-menu-item/:id" element={<EditMenuItem />} />
+              </>
+            )}
           </Routes>
         </Container>
       </div>

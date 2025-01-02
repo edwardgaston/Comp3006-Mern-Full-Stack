@@ -1,4 +1,3 @@
-// filepath: /d:/Coding Projects/Comp3006 Full Stack Development/Comp3006-Mern-Full-Stack/frontend/src/context/UserContext.js
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -18,12 +17,14 @@ export const UserProvider = ({ children }) => {
       })
       .catch(error => {
         console.error('Error fetching user:', error);
+        // Optionally, you can handle the error more gracefully here
       });
     }
   }, []);
 
-  const login = (userData) => {
+  const login = (userData, token) => {
     setUser(userData);
+    localStorage.setItem('token', token);
   };
 
   const logout = () => {
