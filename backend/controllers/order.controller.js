@@ -2,7 +2,7 @@ import Order from '../models/order.models.js';
 
 export const getOrders = async (req, res) => {
   try {
-    const orders = await Order.find().populate('items').populate('userId');
+    const orders = await Order.find();
     res.json(orders);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -10,9 +10,9 @@ export const getOrders = async (req, res) => {
 };
 
 export const createOrder = async (req, res) => {
-  const { userId, items, total } = req.body;
+  const { items, total, customer } = req.body;
   try {
-    const newOrder = new Order({ userId, items, total });
+    const newOrder = new Order({ items, total, customer });
     await newOrder.save();
     res.status(201).json(newOrder);
   } catch (err) {
@@ -20,11 +20,11 @@ export const createOrder = async (req, res) => {
   }
 };
 
-export const updateOrderStatus = async (req, res) => {
+export const updateOrder = async (req, res) => {
   const { id } = req.params;
-  const { status } = req.body;
+  const { items, total, customer, status } = req.body;
   try {
-    const updatedOrder = await Order.findByIdAndUpdate(id, { status }, { new: true });
+    const updatedOrder = await Order.findByIdAndUpdate(id, { items, total, customer, status }, { new: true });
     res.json(updatedOrder);
   } catch (err) {
     res.status(500).json({ error: err.message });

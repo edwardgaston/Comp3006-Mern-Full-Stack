@@ -1,4 +1,4 @@
-// filepath: /d:/Coding Projects/Comp3006 Full Stack Development/Comp3006-Mern-Full-Stack/backend/routes/user.routes.js
+// filepath: /d:/Coding Projects/Comp3006 Full Stack Development/Comp3006-Mern-Full-Stack/backend/routes/user.route.js
 import express from 'express';
 import { register, login, getUser } from '../controllers/user.controller.js';
 import auth from '../middleware/auth.js';

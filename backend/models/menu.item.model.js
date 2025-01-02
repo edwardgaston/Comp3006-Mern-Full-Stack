@@ -1,3 +1,4 @@
+// filepath: /d:/Coding Projects/Comp3006 Full Stack Development/Comp3006-Mern-Full-Stack/backend/models/menu.item.model.js
 import mongoose from 'mongoose';
 
 const MenuItemSchema = new mongoose.Schema({
