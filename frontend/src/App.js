@@ -10,6 +10,7 @@ import Profile from './components/Profile';
 import AddMenuItem from './components/AddMenuItem';
 import EditMenuItem from './components/EditMenuItem';
 import { UserContext } from './context/UserContext';
+import CartIcon from './components/CartIcon'; // Import the CartIcon component
 
 function App() {
   const { user, logout } = useContext(UserContext);
@@ -39,9 +40,7 @@ function App() {
                 </Button>
               </>
             )}
-            <Button color="inherit" component={Link} to="/cart">
-              Cart
-            </Button>
+            <CartIcon /> {/* Use the CartIcon component */}
             {user && (
               <>
                 <IconButton color="inherit" component={Link} to="/profile">
