@@ -1,14 +1,25 @@
-// filepath: /d:/Coding Projects/Comp3006 Full Stack Development/Comp3006-Mern-Full-Stack/backend/scripts/createAdmin.js
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import User from '../models/userModels.js';
 
-dotenv.config();
+// Get the directory name
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load environment variables from the root directory
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 const createAdmin = async () => {
   try {
-    await mongoose.connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+    const dbUri = process.env.DB_URI;
+    if (!dbUri) {
+      throw new Error('DB_URI is not defined in the environment variables');
+    }
+    await mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true });
+    
     const hashedPassword = await bcrypt.hash('adminpassword', 10);
     const admin = new User({
       name: 'Admin',

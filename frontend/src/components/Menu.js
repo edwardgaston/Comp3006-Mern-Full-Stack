@@ -1,4 +1,3 @@
-// filepath: /d:/Coding Projects/Comp3006 Full Stack Development/Comp3006-Mern-Full-Stack/frontend/src/components/Menu.js
 import React, { useEffect, useState, useContext } from 'react';
 import { Grid, Card, CardContent, Typography, CardActions, Button } from '@mui/material';
 import { getMenuItems } from '../services/api';
@@ -32,12 +31,12 @@ function Menu() {
               <Typography variant="body2" color="text.secondary">
                 {item.description}
               </Typography>
-              <Typography variant="h6" component="div">
+              <Typography variant="body2" color="text.secondary">
                 ${item.price}
               </Typography>
             </CardContent>
             <CardActions>
-              <Button size="small" variant="contained" color="primary" onClick={() => addToCart(item)}>
+              <Button variant="contained" color="primary" onClick={() => addToCart(item)}>
                 Add to Cart
               </Button>
             </CardActions>

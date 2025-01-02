@@ -1,4 +1,3 @@
-// filepath: /d:/Coding Projects/Comp3006 Full Stack Development/Comp3006-Mern-Full-Stack/frontend/src/context/CartContext.js
 import React, { createContext, useState } from 'react';
 
 export const CartContext = createContext();
