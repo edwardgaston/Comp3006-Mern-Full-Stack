@@ -35,6 +35,9 @@ function App() {
             <Button color="inherit" component={Link} to="/menu">
               Menu
             </Button>
+            <Button color="inherit" component={Link} to="/orders">
+              Orders
+            </Button>
             {!user && (
               <>
                 <Button color="inherit" component={Link} to="/login">
