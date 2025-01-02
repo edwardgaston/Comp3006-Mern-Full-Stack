@@ -24,6 +24,10 @@ const OrderForm = () => {
     }
   };
 
+  const calculateTotal = () => {
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
+  };
+
   return (
     <Container>
       <Typography variant="h4" component="h1" gutterBottom>
@@ -43,7 +47,7 @@ const OrderForm = () => {
             ))}
           </List>
           <Typography variant="h6" component="div">
-            Total: ${cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)}
+            Total: ${calculateTotal()}
           </Typography>
           <Button variant="contained" color="primary" onClick={handleSubmit}>
             Place Order
