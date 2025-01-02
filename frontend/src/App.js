@@ -9,8 +9,10 @@ import Cart from './components/Cart';
 import Profile from './components/Profile';
 import AddMenuItem from './components/AddMenuItem';
 import EditMenuItem from './components/EditMenuItem';
+import OrderForm from './components/OrderForm';
+import OrderList from './components/OrderList';
 import { UserContext } from './context/UserContext';
-import CartIcon from './components/CartIcon'; // Import the CartIcon component
+import CartIcon from './components/CartIcon';
 
 function App() {
   const { user, logout } = useContext(UserContext);
@@ -32,7 +34,7 @@ function App() {
             </Button>
             <Button color="inherit" component={Link} to="/menu">
               Menu
-            </Button> {/* Add Menu button */}
+            </Button>
             {!user && (
               <>
                 <Button color="inherit" component={Link} to="/login">
@@ -43,7 +45,7 @@ function App() {
                 </Button>
               </>
             )}
-            <CartIcon /> {/* Use the CartIcon component */}
+            <CartIcon />
             {user && (
               <>
                 <IconButton color="inherit" component={Link} to="/profile">
@@ -64,6 +66,8 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/order" element={<OrderForm />} />
+            <Route path="/orders" element={<OrderList />} />
             {user && user.role === 'admin' && (
               <>
                 <Route path="/add-menu-item" element={<AddMenuItem />} />

@@ -1,8 +1,11 @@
 import Order from '../models/order.models.js';
+import MenuItem from '../models/menu.item.model.js';
 
 export const getOrders = async (req, res) => {
   try {
-    const orders = await Order.find();
+    const orders = await Order.find({ userId: req.user._id })
+      .populate('userId', 'name email')
+      .populate('menuItemIds');
     res.json(orders);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -10,9 +13,13 @@ export const getOrders = async (req, res) => {
 };
 
 export const createOrder = async (req, res) => {
-  const { items, total, customer } = req.body;
+  const { menuItemIds } = req.body;
   try {
-    const newOrder = new Order({ items, total, customer });
+    // Fetch menu items to calculate the total
+    const menuItems = await MenuItem.find({ _id: { $in: menuItemIds } });
+    const total = menuItems.reduce((sum, item) => sum + item.price, 0);
+
+    const newOrder = new Order({ menuItemIds, total, userId: req.user._id });
     await newOrder.save();
     res.status(201).json(newOrder);
   } catch (err) {
@@ -22,9 +29,13 @@ export const createOrder = async (req, res) => {
 
 export const updateOrder = async (req, res) => {
   const { id } = req.params;
-  const { items, total, customer, status } = req.body;
+  const { menuItemIds, status } = req.body;
   try {
-    const updatedOrder = await Order.findByIdAndUpdate(id, { items, total, customer, status }, { new: true });
+    // Fetch menu items to calculate the total
+    const menuItems = await MenuItem.find({ _id: { $in: menuItemIds } });
+    const total = menuItems.reduce((sum, item) => sum + item.price, 0);
+
+    const updatedOrder = await Order.findByIdAndUpdate(id, { menuItemIds, total, status }, { new: true });
     res.json(updatedOrder);
   } catch (err) {
     res.status(500).json({ error: err.message });
