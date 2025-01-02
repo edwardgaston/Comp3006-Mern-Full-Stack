@@ -32,7 +32,11 @@ function EditMenuItem() {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:5000/api/menu/${id}`, { name, description, price, category });
+      const token = localStorage.getItem('token'); // Get the token from localStorage
+      await axios.put(`http://localhost:5000/api/menu/${id}`, 
+        { name, description, price, category },
+        { headers: { Authorization: `Bearer ${token}` } } // Include the token in the headers
+      );
       alert('Menu item updated successfully');
       navigate('/menu');
     } catch (error) {
@@ -42,7 +46,10 @@ function EditMenuItem() {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/menu/${id}`);
+      const token = localStorage.getItem('token'); // Get the token from localStorage
+      await axios.delete(`http://localhost:5000/api/menu/${id}`, 
+        { headers: { Authorization: `Bearer ${token}` } } // Include the token in the headers
+      );
       alert('Menu item deleted successfully');
       navigate('/menu');
     } catch (error) {
