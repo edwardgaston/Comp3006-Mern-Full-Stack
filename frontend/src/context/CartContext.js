@@ -6,7 +6,8 @@ export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
   const addToCart = (item) => {
-    setCart([...cart, item]);
+    const newItem = { ...item, id: item.id || new Date().getTime() }; // Ensure unique id
+    setCart([...cart, newItem]);
   };
 
   const removeFromCart = (item) => {

@@ -1,7 +1,6 @@
-// filepath: /d:/Coding Projects/Comp3006 Full Stack Development/Comp3006-Mern-Full-Stack/frontend/src/components/Cart.js
 import React, { useContext } from 'react';
-import { CartContext } from '../context/CartContext';
 import { Container, Typography, List, ListItem, ListItemText, Button } from '@mui/material';
+import { CartContext } from '../context/CartContext';
 
 function Cart() {
   const { cart, removeFromCart } = useContext(CartContext);
@@ -13,7 +12,7 @@ function Cart() {
       </Typography>
       <List>
         {cart.map((item, index) => (
-          <ListItem key={index}>
+          <ListItem key={item.id}>
             <ListItemText primary={item.name} secondary={`$${item.price}`} />
             <Button variant="contained" color="secondary" onClick={() => removeFromCart(item)}>
               Remove
