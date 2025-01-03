@@ -1,5 +1,6 @@
 import Order from '../models/order.models.js';
 import MenuItem from '../models/menu.item.model.js';
+import Notification from '../models/notification.model.js';
 import { emitOrderStatusUpdate } from '../server.js';
 
 export const getOrders = async (req, res) => {
@@ -55,8 +56,19 @@ export const updateOrder = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
   try {
-    const updatedOrder = await Order.findByIdAndUpdate(id, { status }, { new: true });
-    emitOrderStatusUpdate(updatedOrder); // Emit event for order status update
+    const updatedOrder = await Order.findByIdAndUpdate(id, { status }, { new: true }).populate('userId', 'name email');
+    
+    const notification = new Notification({
+      userId: updatedOrder.userId._id,
+      message: `Order #${updatedOrder._id} status updated to ${status}`,
+    });
+    await notification.save();
+
+    emitOrderStatusUpdate({
+      message: notification.message,
+      userId: notification.userId,
+    });
+
     res.json(updatedOrder);
   } catch (err) {
     res.status(500).json({ error: err.message });

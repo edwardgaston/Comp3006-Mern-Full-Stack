@@ -1,11 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import { ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import theme from './theme';
 import { UserProvider } from './context/UserContext';
 import { CartProvider } from './context/CartContext';
+import { NotificationProvider } from './context/NotificationContext';
+
+const theme = createTheme();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -14,7 +16,9 @@ root.render(
     <CssBaseline />
     <UserProvider>
       <CartProvider>
-        <App />
+        <NotificationProvider>
+          <App />
+        </NotificationProvider>
       </CartProvider>
     </UserProvider>
   </ThemeProvider>

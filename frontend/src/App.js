@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Button, Container, IconButton, Avatar } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Container, IconButton, Avatar, Badge, Popover, List, ListItem, ListItemText } from '@mui/material';
 import Home from './components/Home';
 import Menu from './components/Menu';
 import Login from './components/Login';
@@ -11,16 +11,31 @@ import AddMenuItem from './components/AddMenuItem';
 import EditMenuItem from './components/EditMenuItem';
 import OrderForm from './components/OrderForm';
 import OrderList from './components/OrderList';
-import AllOrders from './components/AllOrders'; // Import the new component
+import AllOrders from './components/AllOrders'; 
 import { UserContext } from './context/UserContext';
+import { NotificationContext } from './context/NotificationContext';
 import CartIcon from './components/CartIcon';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 function App() {
   const { user, logout } = useContext(UserContext);
+  const { notifications } = useContext(NotificationContext);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const handleLogout = () => {
     logout();
   };
+
+  const handleNotificationClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleNotificationClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
 
   return (
     <Router>
@@ -54,6 +69,33 @@ function App() {
                 </Button>
               </>
             )}
+            <IconButton color="inherit" onClick={handleNotificationClick}>
+              <Badge badgeContent={notifications.length} color="secondary">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+            <Popover
+              id={id}
+              open={open}
+              anchorEl={anchorEl}
+              onClose={handleNotificationClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'center',
+              }}
+            >
+              <List>
+                {notifications.map((notification, index) => (
+                  <ListItem key={index}>
+                    <ListItemText primary={notification.message} />
+                  </ListItem>
+                ))}
+              </List>
+            </Popover>
             <CartIcon />
             {user && (
               <>

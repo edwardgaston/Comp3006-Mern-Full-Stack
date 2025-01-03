@@ -4,10 +4,12 @@ import cors from 'cors';
 import http from 'http';
 import { Server } from 'socket.io';
 import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
 import menuRoutes from './routes/menu.item.route.js';
 import orderRoutes from './routes/order.route.js';
 import productRoutes from './routes/product.route.js';
 import userRoutes from './routes/user.route.js';
+import notificationRoutes from './routes/notification.route.js';
 import User from './models/userModels.js';
 
 dotenv.config();
@@ -35,6 +37,7 @@ app.use('/api/menu', menuRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 io.on('connection', async (socket) => {
   console.log('a user connected');
@@ -59,8 +62,8 @@ io.on('connection', async (socket) => {
   });
 });
 
-export const emitOrderStatusUpdate = (order) => {
-  io.emit('orderStatusUpdate', order);
+export const emitOrderStatusUpdate = (notification) => {
+  io.emit('orderStatusUpdate', notification);
 };
 
 server.listen(PORT, () => {
