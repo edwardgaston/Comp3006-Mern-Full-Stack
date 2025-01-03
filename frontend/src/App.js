@@ -11,6 +11,7 @@ import AddMenuItem from './components/AddMenuItem';
 import EditMenuItem from './components/EditMenuItem';
 import OrderForm from './components/OrderForm';
 import OrderList from './components/OrderList';
+import AllOrders from './components/AllOrders'; // Import the new component
 import { UserContext } from './context/UserContext';
 import CartIcon from './components/CartIcon';
 
@@ -38,6 +39,11 @@ function App() {
             <Button color="inherit" component={Link} to="/orders">
               Orders
             </Button>
+            {user && user.role === 'staff' && (
+              <Button color="inherit" component={Link} to="/all-orders">
+                All Orders
+              </Button>
+            )}
             {!user && (
               <>
                 <Button color="inherit" component={Link} to="/login">
@@ -71,6 +77,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/order" element={<OrderForm />} />
             <Route path="/orders" element={<OrderList />} />
+            <Route path="/all-orders" element={<AllOrders />} /> {/* Add the new route */}
             {user && user.role === 'admin' && (
               <>
                 <Route path="/add-menu-item" element={<AddMenuItem />} />

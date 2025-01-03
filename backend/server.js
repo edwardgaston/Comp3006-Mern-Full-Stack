@@ -8,6 +8,7 @@ import menuRoutes from './routes/menu.item.route.js';
 import orderRoutes from './routes/order.route.js';
 import productRoutes from './routes/product.route.js';
 import userRoutes from './routes/user.route.js';
+import User from './models/userModels.js';
 
 dotenv.config();
 
@@ -35,8 +36,24 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
   console.log('a user connected');
+  
+  // Check if the user is a staff user
+  const token = socket.handshake.query.token;
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const user = await User.findById(decoded.id);
+      if (user && user.role === 'staff') {
+        console.log('Staff user connected:', user.email);
+        socket.emit('staffConnected', { message: 'Staff user connected' });
+      }
+    } catch (error) {
+      console.error('Error verifying token:', error);
+    }
+  }
+
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });

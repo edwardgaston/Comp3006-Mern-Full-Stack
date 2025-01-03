@@ -13,6 +13,17 @@ export const getOrders = async (req, res) => {
   }
 };
 
+export const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find()
+      .populate('userId', 'name email')
+      .populate('menuItemIds');
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 export const getOrderById = async (req, res) => {
   const { id } = req.params;
   try {
