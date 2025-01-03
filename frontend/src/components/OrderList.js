@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { UserContext } from '../context/UserContext';
-import { Container, Typography, List, ListItem, ListItemText } from '@mui/material';
+import { Container, Typography, List, ListItem, ListItemText, Button } from '@mui/material';
 
 const OrderList = () => {
   const [orders, setOrders] = useState([]);
@@ -23,6 +23,33 @@ const OrderList = () => {
     fetchOrders();
   }, [user]);
 
+  const handleUpdate = async (orderId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.put(`http://localhost:5000/api/orders/${orderId}`, 
+        { status: 'Updated' }, // Example update, you can modify as needed
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      console.log('Order updated:', response.data);
+      setOrders(orders.map(order => order._id === orderId ? response.data : order));
+    } catch (error) {
+      console.error('Error updating order:', error);
+    }
+  };
+
+  const handleDelete = async (orderId) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`http://localhost:5000/api/orders/${orderId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      console.log('Order deleted');
+      setOrders(orders.filter(order => order._id !== orderId));
+    } catch (error) {
+      console.error('Error deleting order:', error);
+    }
+  };
+
   return (
     <Container>
       <Typography variant="h4" component="h1" gutterBottom>
@@ -42,6 +69,16 @@ const OrderList = () => {
                 </ListItem>
               ))}
             </List>
+            {order.status === 'Pending' && (
+              <>
+                <Button variant="contained" color="primary" onClick={() => handleUpdate(order._id)}>
+                  Update
+                </Button>
+                <Button variant="contained" color="secondary" onClick={() => handleDelete(order._id)}>
+                  Delete
+                </Button>
+              </>
+            )}
           </ListItem>
         ))}
       </List>
