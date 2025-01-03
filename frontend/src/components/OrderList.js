@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { UserContext } from '../context/UserContext';
-import { Container, Typography, List, ListItem, ListItemText, Button } from '@mui/material';
+import { Container, Typography, List, ListItem, ListItemText, Button, Select, MenuItem } from '@mui/material';
+import socket from '../services/socket';
 
 const OrderList = () => {
   const [orders, setOrders] = useState([]);
@@ -21,7 +22,31 @@ const OrderList = () => {
     };
 
     fetchOrders();
+
+    socket.on('orderStatusUpdate', (updatedOrder) => {
+      setOrders((prevOrders) =>
+        prevOrders.map((order) => (order._id === updatedOrder._id ? updatedOrder : order))
+      );
+    });
+
+    return () => {
+      socket.off('orderStatusUpdate');
+    };
   }, [user]);
+
+  const handleStatusChange = async (orderId, newStatus) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.put(`http://localhost:5000/api/orders/${orderId}`, 
+        { status: newStatus },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      console.log('Order status updated:', response.data);
+      setOrders(orders.map(order => order._id === orderId ? response.data : order));
+    } catch (error) {
+      console.error('Error updating order status:', error);
+    }
+  };
 
   const handleDelete = async (orderId) => {
     try {
@@ -55,6 +80,17 @@ const OrderList = () => {
                 </ListItem>
               ))}
             </List>
+            {user && user.role === 'staff' && (
+              <Select
+                value={order.status}
+                onChange={(e) => handleStatusChange(order._id, e.target.value)}
+              >
+                <MenuItem value="Pending">Pending</MenuItem>
+                <MenuItem value="Preparing">Preparing</MenuItem>
+                <MenuItem value="Out for Delivery">Out for Delivery</MenuItem>
+                <MenuItem value="Delivered">Delivered</MenuItem>
+              </Select>
+            )}
             {order.status === 'Pending' && (
               <Button variant="contained" color="secondary" onClick={() => handleDelete(order._id)}>
                 Delete

@@ -1,5 +1,6 @@
 import Order from '../models/order.models.js';
 import MenuItem from '../models/menu.item.model.js';
+import { emitOrderStatusUpdate } from '../server.js';
 
 export const getOrders = async (req, res) => {
   try {
@@ -41,12 +42,10 @@ export const createOrder = async (req, res) => {
 
 export const updateOrder = async (req, res) => {
   const { id } = req.params;
-  const { menuItemIds, status } = req.body;
+  const { status } = req.body;
   try {
-    const menuItems = await MenuItem.find({ _id: { $in: menuItemIds } });
-    const total = menuItems.reduce((sum, item) => sum + item.price, 0);
-
-    const updatedOrder = await Order.findByIdAndUpdate(id, { menuItemIds, total, status }, { new: true });
+    const updatedOrder = await Order.findByIdAndUpdate(id, { status }, { new: true });
+    emitOrderStatusUpdate(updatedOrder); // Emit event for order status update
     res.json(updatedOrder);
   } catch (err) {
     res.status(500).json({ error: err.message });

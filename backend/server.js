@@ -16,7 +16,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: '*',
-    methods: ['GET', 'POST']
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
   }
 });
 
@@ -30,7 +30,11 @@ mongoose.connect(DB_URI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log(err));
 
-// WebSocket setup
+app.use('/api/menu', menuRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/users', userRoutes);
+
 io.on('connection', (socket) => {
   console.log('a user connected');
   socket.on('disconnect', () => {
@@ -38,11 +42,9 @@ io.on('connection', (socket) => {
   });
 });
 
-// Routes
-app.use('/api/menu', menuRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/users', userRoutes);
+export const emitOrderStatusUpdate = (order) => {
+  io.emit('orderStatusUpdate', order);
+};
 
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
