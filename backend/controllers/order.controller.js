@@ -12,10 +12,22 @@ export const getOrders = async (req, res) => {
   }
 };
 
+export const getOrderById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const order = await Order.findById(id).populate('menuItemIds');
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+    res.json(order);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 export const createOrder = async (req, res) => {
   const { menuItemIds } = req.body;
   try {
-    // Fetch menu items to calculate the total
     const menuItems = await MenuItem.find({ _id: { $in: menuItemIds } });
     const total = menuItems.reduce((sum, item) => sum + item.price, 0);
 
@@ -31,7 +43,6 @@ export const updateOrder = async (req, res) => {
   const { id } = req.params;
   const { menuItemIds, status } = req.body;
   try {
-    // Fetch menu items to calculate the total
     const menuItems = await MenuItem.find({ _id: { $in: menuItemIds } });
     const total = menuItems.reduce((sum, item) => sum + item.price, 0);
 

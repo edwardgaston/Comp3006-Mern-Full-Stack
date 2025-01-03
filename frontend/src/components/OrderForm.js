@@ -25,7 +25,10 @@ const OrderForm = () => {
   };
 
   const calculateTotal = () => {
-    return cart.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
+    const total = cart.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0);
+    console.log('Cart items:', cart); // Debugging log
+    console.log('Total:', total); // Debugging log
+    return total.toFixed(2);
   };
 
   return (
@@ -41,8 +44,8 @@ const OrderForm = () => {
         <>
           <List>
             {cart.map((item, index) => (
-              <ListItem key={index}>
-                <ListItemText primary={item.name} secondary={`$${item.price} x ${item.quantity}`} />
+              <ListItem key={`${item._id}-${index}`}>
+                <ListItemText primary={item.name} secondary={`$${item.price} x ${item.quantity || 1}`} />
               </ListItem>
             ))}
           </List>
